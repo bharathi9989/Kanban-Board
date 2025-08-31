@@ -91,7 +91,7 @@ function App() {
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Add a new Task..."
-              className="flex-grow p-3 bg-zinc-700 text-white"
+              className="flex-grow p-4 bg-zinc-700 text-white"
               onKeyDown={(e) => e.key === "Enter" && addNewTask()}
             />
             <select
@@ -113,6 +113,53 @@ function App() {
             >
               Add
             </button>
+          </div>
+          <div className="flex gap-6 overflow-x-auto pb-6 w-full">
+            {Object.keys(columns).map((columnId) => (
+              <div
+                key={columnId}
+                className={`flex-shrink-0 w-80 bg-zinc-800 rounded-lg shadow-xl border-t-4 ${
+                  columnStyle[columnId.border]
+                }`}
+                onDragOver={(e) => handleDragover(e, columnId)}
+                onDrop={(e) => handleDrop(e, columnId)}
+              >
+                <div
+                  className={`p-4 text-white font-bold text-xl rounded-t-md ${columnStyle[columnId].header}`}
+                >
+                  {columns[columnId].name}
+                  <span className="ml-2 px-2 py-1 bg-zinc-800 bg-opacity-30 rounded-full text-sm">
+                    {columns[columnId].items.length}
+                  </span>
+                </div>
+
+                <div className="p-3 min-h-100">
+                  {columns[columnId].items.length === 0 ? (
+                    <div className="text-center py-10 text-zinc-500 italic text-sm">
+                      Drop Task Here
+                    </div>
+                  ) : (
+                    columns[columnId].items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-4 mb-3 bg-zinc-700 text-white rounded-lg shadow-md cursor-move flex items-center justify-between transform transition-all duration-200
+                      hover:scale-105 hover:shadow-lg"
+                        draggable
+                        onDragStart={() => handleDragStart(columnId, item)}
+                      >
+                        <span className="mr-2">{item.content}</span>
+                        <button
+                          onClick={() => removeTask(columnId, item.id)}
+                          className="text-zinc-400 hover:text-red-400 transition-colors duration-200 w-6 h-6 flex items-center justify-center rounded-full hover:bg-zinc-600"
+                        >
+                          <span className="text-lg cursor-pointer">x</span>
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
